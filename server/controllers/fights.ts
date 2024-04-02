@@ -1,5 +1,5 @@
 import express from "express";
-import { FightRequestModal, createFight, createFightRequest } from "../db/fight";
+import { FightModal, FightRequestModal, createFight, createFightRequest } from "../db/fight";
 
 export const registerFight = async (req: express.Request, res: express.Response) => {
     const { challenger, challenged, time, location } = req.body;
@@ -47,5 +47,12 @@ export const acceptFight = async (req: express.Request, res: express.Response) =
         date: fightRequest.date,
         location: fightRequest.location,
     });
+    await FightRequestModal.findByIdAndDelete(fightRequestId);
     res.status(200).send({ message: "Fight accepted" }).end();
+}
+
+export const getFights = async (req: express.Request, res: express.Response) => {
+    const fights = await FightModal.find();
+    res.status(200).send({ fights }).end();
+
 }
