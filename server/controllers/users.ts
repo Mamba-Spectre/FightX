@@ -1,5 +1,6 @@
 import express from "express";
 import { UserModel } from "../db/users";
+import { ForumModal } from "../db/forum";
 
 export const searchUser = async (
   req: express.Request,
@@ -24,3 +25,19 @@ export const searchUser = async (
     res.status(500).send({ message: "Internal Server Error" });
   }
 };
+
+export const userForums = async (req: express.Request, res: express.Response) => {
+  try {
+      const { username } = req.query;
+      if (!username) {
+          return res.status(400).send({ message: "Username is required" });
+      }
+      
+      const forums = await ForumModal.find({ content: { $regex: new RegExp(username.toString(), 'i') } });
+      res.status(200).send({ forums }).end();
+  } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: "Internal Server Error" });
+  }
+};
+

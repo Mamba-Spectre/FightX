@@ -22,10 +22,10 @@ const FightRequestSchema = new mongoose.Schema({
 });
 
 const BidSchema = new mongoose.Schema({
-    fighter: { type: String, required: true }, // Participant who receives the bid
-    amount: { type: Number, required: true }, // Bid amount
-    bidder: { type: String, required: true }, // User who placed the bid
-    timestamp: { type: Date, default: Date.now } // Timestamp of the bid
+    fighter: { type: String, required: true },
+    amount: { type: Number, required: true }, 
+    bidder: { type: String, required: true }, 
+    timestamp: { type: Date, default: Date.now } 
 });
 
 export const BidModal = mongoose.model("Bid", BidSchema);
