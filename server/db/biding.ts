@@ -4,6 +4,7 @@ const BidSchema = new mongoose.Schema({
     fighter: { type: String, required: true },
     amount: { type: Number, required: true }, 
     bidder: { type: String, required: true }, 
+    winning: { type: Boolean, default: false },
     timestamp: { type: Date, default: Date.now } 
 });
 
