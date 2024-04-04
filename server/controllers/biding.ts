@@ -4,6 +4,7 @@ import { FightModal } from '../db/fight';
 
 export const registerBid = async (req: express.Request, res: express.Response) => {
     const { username } = req.query;
+    const fightId = req.params.id;
     const { fighter, amount } = req.body;
     if (!fighter || !amount || !username) {
         return res.status(400).send({ message: 'Missing required fields' });
@@ -11,12 +12,24 @@ export const registerBid = async (req: express.Request, res: express.Response) =
     if (amount < 0) {
         return res.status(400).send({ message: 'Amount must be positive' });
     }
-
     await createBid({
         fighter,
         amount,
         bidder:username,
     });
+    try {
+        const fight:any = await FightModal.findById(fightId);
+        if (!fight) {
+            return res.status(404).send({ message: 'Fight not found' });
+        }
+        fight.bids[fighter] += amount;
+        await fight.save();
+
+        res.status(200).send({ message: 'Bid registered', updatedFight: fight }).end();
+    } catch (error) {
+        console.error('Error registering bid:', error);
+        res.status(500).send({ message: 'Internal server error' });
+    }
     res.status(200).send({ message: 'Bid registered' }).end();
 };
 
@@ -39,17 +52,17 @@ export const getFightBiddingOdds = async (req: express.Request, res: express.Res
     const totalChallengerBids = fightDetails?.bids.challenger;
     const totalChallengedBids = fightDetails?.bids.challenged;
     if (!totalChallengerBids || !totalChallengedBids) {
-        return res.status(400).send({ message: 'Bids not found not found' });
+        return res.status(400).send({ message: 'Bids not found' });
     }
     const totalBids = totalChallengerBids + totalChallengedBids;
-    const impliedProbabilityTeam1 = totalChallengedBids / totalChallengerBids;
-    const impliedProbabilityTeam2 = totalChallengerBids / totalChallengedBids;
+    const impliedProbabilityChallenger = totalChallengedBids / totalChallengerBids;
+    const impliedProbabilityChallenged = totalChallengerBids / totalChallengedBids;
 
-    const adjustedImpliedProbabilityTeam1 = impliedProbabilityTeam1 * (1 - bookmakerEdge);
-    const adjustedImpliedProbabilityTeam2 = impliedProbabilityTeam2 * (1 - bookmakerEdge);
+    const adjustedImpliedProbabilityChallenger = impliedProbabilityChallenger * (1 - bookmakerEdge);
+    const adjustedImpliedProbabilityChallenged = impliedProbabilityChallenged * (1 - bookmakerEdge);
 
-    const challengerTeamOdds = 1 / adjustedImpliedProbabilityTeam1;
-    const challengedTeamOdds = 1 / adjustedImpliedProbabilityTeam2;
+    const challengerTeamOdds = 1 / adjustedImpliedProbabilityChallenger;
+    const challengedTeamOdds = 1 / adjustedImpliedProbabilityChallenged;
 
     // const stake = 1;
 
