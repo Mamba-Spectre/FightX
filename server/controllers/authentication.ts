@@ -4,8 +4,8 @@ import { authentication, random } from "../helper";
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, username, fullname, password } = req.body;
-    if (!email || !username || !fullname || !password) {
+    const { email, username, fullname, password, profilePicture } = req.body;
+    if (!email || !username || !fullname || !password || !profilePicture) {
       return res.status(400).send({ message: "All fields are required" });
     }
     const exsistingUser = await UserModel.findOne({ email });
@@ -23,6 +23,7 @@ export const register = async (req: express.Request, res: express.Response) => {
       email,
       username,
       fullname,
+      profilePicture,
       authentication: {
         salt,
         password: authentication(salt, password)
