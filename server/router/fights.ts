@@ -6,8 +6,8 @@ import { isAuthenticated } from "../middleware";
 
 const router = express.Router();
 
-router.get('/fightRequests',isAuthenticated,getFightRequests);
-router.post('/registerFight',isAuthenticated,registerFight);
-router.post('/acceptFight',isAuthenticated,acceptFight);
+router.get('/fightRequests',getFightRequests);
+router.post('/registerFight',registerFight);
+router.post('/acceptFight',acceptFight);
 
 export default router;

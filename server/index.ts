@@ -23,11 +23,11 @@ app.listen(port, () => {
 });
 
 const MONGO_URI =
-  "mongodb+srv://harshvardhan23007:CCIM9wiy5Mb5cVrJ@cluster0.ywqrmk4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+"mongodb+srv://harshvardhan23007:CCIM9wiy5Mb5cVrJ@cluster0.ywqrmk4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose.Promise = Promise;
 mongoose.connect(MONGO_URI);
 mongoose.connection.on("error", (err) => {
-  console.log("Mongoose connection error: " + err);
+  console.log("Mongoose connection error");
   process.exit(1);
 });
 mongoose.connection.on("connected", () => {

@@ -21,15 +21,6 @@ const FightRequestSchema = new mongoose.Schema({
     location: { type: String, required: true },
 });
 
-const BidSchema = new mongoose.Schema({
-    fighter: { type: String, required: true },
-    amount: { type: Number, required: true }, 
-    bidder: { type: String, required: true }, 
-    timestamp: { type: Date, default: Date.now } 
-});
-
-export const BidModal = mongoose.model("Bid", BidSchema);
-
 
 export const FightModal = mongoose.model("Fight", FightSchema);
 export const createFight = (values: Record<string, any>) => new FightModal(values).save().then((fight) => fight.toObject());
